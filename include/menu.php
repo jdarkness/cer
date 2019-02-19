@@ -12,8 +12,6 @@ $actual=basename($_SERVER['PHP_SELF']);
 	  <li><a <?php if ($actual=='signup.php') {?> class="activo" <?php } ?>href="signup.php">Nuevo Usuario</a></li>
 	  <li><a <?php if ($actual=='acercade.php') {?> class="activo" <?php } ?>href="acercade.php">Acerca de</a></li>
 	  <li><a href="logout.php">Salir</a></li>
-	  <li><a <?php if ($actual=='pendientes.php') {?> class="activo" <?php } ?>href="pendientes.php">Pendientes</a></li>
-	  
 	</ul>
 </div>
 <?php 

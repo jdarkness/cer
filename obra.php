@@ -135,6 +135,7 @@ if (empty($_SESSION["usuario"])) {
 			break;
 		case 'actualizar':
 			// Actualizamos los datos del registros	
+			$numObra=texto_seguro($_POST['NoObra'], $link);
 			$idEvento=texto_seguro($_POST['IdEvento'], $link);
 			$numContrato=texto_seguro($_POST['NoContrato'], $link);
 			//$nomMunicipio=texto_seguro($_POST['Municipio'], $link);
@@ -143,28 +144,49 @@ if (empty($_SESSION["usuario"])) {
 			//$nomLocalidad=texto_seguro($_POST['Localidad'], $link);
 			$nomCentroTrabajo=texto_seguro($_POST['CentroTrabajo'], $link);
 			$idContratista=texto_seguro($_POST['IdContratista'], $link);
-			//$query="UPDATE Obra SET IdEvento='$idEvento', IdMunicipio='$idMunicipio', IdLocalidad='$idLocalidad', NoContrato='$numContrato', Municipio='$nomMunicipio', Localidad='$nomLocalidad', CentroTrabajo='$nomCentroTrabajo', IdContratista='$idContratista' WHERE IdObra='$valor';";
-			$query="UPDATE Obra SET IdEvento='$idEvento', IdMunicipio='$idMunicipio', IdLocalidad='$idLocalidad', NoContrato='$numContrato', CentroTrabajo='$nomCentroTrabajo', IdContratista='$idContratista' WHERE IdObra='$valor';";
-			if ($resultado = mysqli_query($link, $query)) {				
-				$msgBoton='Agregar Obra';
-				$accion='nuevo';
-				$numObra='';
-				$idEvento='';
-				$idMunicipio='';
-				$idLocalidad='';
-				$numContrato='';
-				//$nomMunicipio='';
-				//$nomLocalidad='';
-				$nomCentroTrabajo='';
-				$idContratista='';
-				$valor='';
-				$mensaje=tipo_mensaje('info', 'Registro Actualizado');
-			} else {
-				//Error en la consulta		
-				$texto=mysqli_error($link). ' ' . $query;
-				$tipo='error';
-				$mensaje=tipo_mensaje($tipo, $texto);				
-			}
+
+////////////////////////////////////////////////
+			if (empty($numObra) || empty($idEvento)) {
+					$mensaje=tipo_mensaje('error', 'Falta campo obligatorio. ');
+				} else {
+					// Corroboramos que no este dado de alta ese numero de obra en ese evento
+					$query="SELECT IdObra FROM Obra WHERE NoObra = '$numObra' AND IdEvento = $idEvento;";
+					if (!($resultado = mysqli_query($link, $query))) {
+						//Error en la consulta						
+						$texto=mysqli_error($link). ' ' . $query;
+						$tipo='error';
+						$mensaje=tipo_mensaje($tipo, $texto);
+					} else {
+						if (mysqli_num_rows($resultado)>0) {
+							$mensaje=tipo_mensaje('advertencia', 'Ya existe la obra');
+						} else {
+
+/////////////////////////////////////////////////
+								//$query="UPDATE Obra SET IdEvento='$idEvento', IdMunicipio='$idMunicipio', IdLocalidad='$idLocalidad', NoContrato='$numContrato', Municipio='$nomMunicipio', Localidad='$nomLocalidad', CentroTrabajo='$nomCentroTrabajo', IdContratista='$idContratista' WHERE IdObra='$valor';";
+								$query="UPDATE Obra SET NoObra='$numObra', IdEvento='$idEvento', IdMunicipio='$idMunicipio', IdLocalidad='$idLocalidad', NoContrato='$numContrato', CentroTrabajo='$nomCentroTrabajo', IdContratista='$idContratista' WHERE IdObra='$valor';";
+								if ($resultado = mysqli_query($link, $query)) {				
+									$msgBoton='Agregar Obra';
+									$accion='nuevo';
+									$numObra='';
+									$idEvento='';
+									$idMunicipio='';
+									$idLocalidad='';
+									$numContrato='';
+									//$nomMunicipio='';
+									//$nomLocalidad='';
+									$nomCentroTrabajo='';
+									$idContratista='';
+									$valor='';
+									$mensaje=tipo_mensaje('info', 'Registro Actualizado');
+								} else {
+									//Error en la consulta		
+									$texto=mysqli_error($link). ' ' . $query;
+									$tipo='error';
+									$mensaje=tipo_mensaje($tipo, $texto);				
+								}
+							}
+						}
+					}				
 			break;
 		case 'eliminar':
 			// eliminamos un registro
@@ -345,7 +367,7 @@ if (empty($_SESSION["usuario"])) {
 			?>
 			</select>
 		</span></label>	
-	<label for="NoObra"><span class="etiqueta">Num. Obra <span class="requerido">*</span> :</span><span class="campo"><input type="text" id="NoObra" name="NoObra" value="<?php echo $numObra; ?>" required <?php if ($accion=='actualizar') { ?> readonly <?php } ?>/></span></label>
+	<label for="NoObra"><span class="etiqueta">Num. Obra <span class="requerido">*</span> :</span><span class="campo"><input type="text" id="NoObra" name="NoObra" value="<?php echo $numObra; ?>" required /></span></label>
 	<label for="NoContrato"><span class="etiqueta">Num. Contrato :</span><span class="campo"><input type="text" id="NoContrato" name="NoContrato" value="<?php echo $numContrato; ?>"  /></span></label>
 	<label for="IdMunicipio"><span class="etiqueta">Municipio <span class="requerido">*</span> :</span>
 		<span class="campo">

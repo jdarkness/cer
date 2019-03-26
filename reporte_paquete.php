@@ -8,11 +8,17 @@ if (empty($_SESSION["usuario"])) {
 	exit();
 } else {
 	$link=conectar_a_bd();
-	$idPaquete=texto_seguro($_GET['idPaquete'], $link);
-	$query="SELECT Estimacion.IdEstimacion, Evento.NombreCorto, Estimacion.NoContrato, NoEstimacion, MontoRetenciones, MontoLiquido, MontoEjercido, Observaciones, Obra.NoContrato AS NumContrato, Obra.Municipio, Obra.CentroTrabajo, Contratista.NombreLargo FROM Estimacion LEFT JOIN Obra ON Estimacion.IdObra = Obra.IdObra LEFT JOIN Contratista ON Obra.IdContratista = Contratista.IdContratista LEFT JOIN Evento ON Obra.IdEvento = Evento.IdEvento WHERE Estimacion.IdPaquete = '$idPaquete'";			
+	$idPaquete=texto_seguro($_GET['idPaquete'], $link);	
+	$query ="SELECT Estimacion.IdEstimacion, Evento.NombreCorto, Estimacion.NoContrato, NoEstimacion, MontoRetenciones, MontoLiquido, MontoEjercido, Observaciones, Obra.NoContrato AS NumContrato, Obra.CentroTrabajo, Contratista.NombreLargo, municipios.nombre AS Municipio
+			 FROM Estimacion 
+			 LEFT JOIN Obra ON Estimacion.IdObra = Obra.IdObra 
+			 LEFT JOIN Contratista ON Obra.IdContratista = Contratista.IdContratista 
+			 LEFT JOIN Evento ON Obra.IdEvento = Evento.IdEvento
+			 LEFT JOIN municipios ON Obra.IdMunicipio = municipios.id
+			 WHERE Estimacion.IdPaquete = '$idPaquete'";
 	if (!($resultado = mysqli_query($link, $query))) {
 		//Error en la consulta		
-		$texto=mysqli_error($link). ' ' . $query;
+		echo $texto=mysqli_error($link). ' ' . $query;
 		$tipo='error';
 		$mensaje=tipo_mensaje($tipo, $texto);
 	}	
@@ -66,9 +72,9 @@ if (empty($_SESSION["usuario"])) {
 		<td ><?php echo $row['NoContrato'];?></td>
 		<td ><?php echo $row['NombreLargo'];?></td>
 		<td ><?php echo $row['CentroTrabajo'];?></td>    
-		<td ><?php echo $row['Municipio'];?></td>
-		<td ><?php echo $row['NoEstimacion'];?></td>
-		<td ><?php echo number_format($row['MontoRetenciones'], 2, '.', ',');?></td>
+		<td class="alinear_centro"><?php echo $row['Municipio'];?></td>
+		<td class="alinear_centro"><?php echo $row['NoEstimacion'];?></td>
+		<td class="alinear_derecha"><?php echo number_format($row['MontoRetenciones'], 2, '.', ',');?></td>
 		<td ><?php echo number_format($row['MontoLiquido'], 2, '.', ',');?></td>
 		<td ><?php echo number_format($row['MontoEjercido'], 2, '.', ',');?></td>
 		<td ><?php echo $row['Observaciones'];?></td>	
@@ -86,7 +92,7 @@ if (empty($_SESSION["usuario"])) {
 </html>
 <script type="text/javascript">
 	window.print();
-	window.close();
+	//window.close();
 </script>    
 
 <?php

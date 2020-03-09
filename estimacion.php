@@ -93,8 +93,9 @@ if (empty($_SESSION["usuario"])) {
 			
 								// Buscamos su numero de obra
 								$idObra='';
-								$noContrato=substr($numContrato, 0, 7);
-								$query="SELECT IdObra FROM Obra WHERE NoContrato LIKE '$noContrato%'";
+								//$noContrato=substr($numContrato, 0, 7);
+								//$query="SELECT IdObra FROM Obra WHERE NoContrato LIKE '$noContrato%'";
+								$query="SELECT IdObra FROM Obra WHERE NoContrato LIKE '$numContrato%'";
 								if (!($resultado = mysqli_query($link, $query))) {
 									//Error en la consulta						
 									$texto=mysqli_error($link). ' ' . $query;

@@ -408,18 +408,18 @@ if (empty($_SESSION["usuario"])) {
 			$row = mysqli_fetch_assoc($resultado);
 			?>
 	
-	<tr class="editar_registro" >
-	<td class="alinear_centro" onclick="enviar_accion('editar','<?php echo $row['IdEstimacion'];?>');"><?php echo $i+1; ?></td>
-	<td onclick="enviar_accion('editar','<?php echo $row['IdEstimacion'];?>');"><?php echo $row['NombreCorto'];?></td>
-	<td onclick="enviar_accion('editar','<?php echo $row['IdEstimacion'];?>');"><?php echo $row['NoContrato'];?></td>
-    <td onclick="enviar_accion('editar','<?php echo $row['IdEstimacion'];?>');"><?php echo $row['NombreLargo'];?></td>
-    <td onclick="enviar_accion('editar','<?php echo $row['IdEstimacion'];?>');"><?php echo $row['CentroTrabajo'];?></td>    
-	<td class="alinear_centro" onclick="enviar_accion('editar','<?php echo $row['IdEstimacion'];?>');"><?php echo $row['NomMunicipio'];?></td>
-	<td class="alinear_derecha" onclick="enviar_accion('editar','<?php echo $row['IdEstimacion'];?>');"><?php echo $row['NoEstimacion'];?></td>
-	<td class="alinear_derecha" onclick="enviar_accion('editar','<?php echo $row['IdEstimacion'];?>');"><?php echo number_format($row['MontoRetenciones'], 2, '.', ',');?></td>
-	<td class="alinear_derecha" onclick="enviar_accion('editar','<?php echo $row['IdEstimacion'];?>');"><?php echo number_format($row['MontoLiquido'], 2, '.', ',');?></td>
-	<td class="alinear_derecha" onclick="enviar_accion('editar','<?php echo $row['IdEstimacion'];?>');"><?php echo number_format($row['MontoEjercido'], 2, '.', ',');?></td>
-	<td onclick="enviar_accion('editar','<?php echo $row['IdEstimacion'];?>');"><?php echo $row['Observaciones'];?></td>
+	<tr >
+	<td class="alinear_centro" ><?php echo $i+1; ?></td>
+	<td ><?php echo $row['NombreCorto'];?></td>
+	<td ><?php echo $row['NoContrato'];?></td>
+    <td ><?php echo $row['NombreLargo'];?></td>
+    <td ><?php echo $row['CentroTrabajo'];?></td>    
+	<td class="alinear_centro" ><?php echo $row['NomMunicipio'];?></td>
+	<td class="alinear_derecha" ><?php echo $row['NoEstimacion'];?></td>
+	<td class="alinear_derecha" ><?php echo number_format($row['MontoRetenciones'], 2, '.', ',');?></td>
+	<td class="alinear_derecha" ><?php echo number_format($row['MontoLiquido'], 2, '.', ',');?></td>
+	<td class="alinear_derecha" ><?php echo number_format($row['MontoEjercido'], 2, '.', ',');?></td>
+	<td ><?php echo $row['Observaciones'];?></td>
 	<td>		
 		<div class="acciones">
 		<a href="#" onclick="enviar_accion('editar','<?php echo $row['IdEstimacion'];?>');">

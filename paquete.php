@@ -339,12 +339,12 @@ if (empty($_SESSION["usuario"])) {
 			$row = mysqli_fetch_assoc($resultado);			
 			?>
 	
-	<tr class="editar_registro">
-	<td class="alinear_centro" onclick="enviar_accion('editar','<?php echo $row['IdPaquete'];?>');"><?php echo $i+1; ?></td>
-	<td class="alinear_centro" onclick="enviar_accion('editar','<?php echo $row['IdPaquete'];?>');"><?php echo $row['IdPaquete']; ?></td>
-    <td onclick="enviar_accion('editar','<?php echo $row['IdPaquete'];?>');"><?php echo toHTMLDate($row['FechaRecepcion'],'-');?></td>
-    <td onclick="enviar_accion('editar','<?php echo $row['IdPaquete'];?>');"><?php echo $row['QuienEntrego'];?></td>
-    <td onclick="enviar_accion('editar','<?php echo $row['IdPaquete'];?>');"><?php echo empty($row['FechaTermino']) ? '': toHTMLDate($row['FechaTermino'],'-'); ?></td>
+	<tr >
+	<td class="alinear_centro" ><?php echo $i+1; ?></td>
+	<td class="alinear_centro" ><?php echo $row['IdPaquete']; ?></td>
+    <td ><?php echo toHTMLDate($row['FechaRecepcion'],'-');?></td>
+    <td ><?php echo $row['QuienEntrego'];?></td>
+    <td ><?php echo empty($row['FechaTermino']) ? '': toHTMLDate($row['FechaTermino'],'-'); ?></td>
 	<td>		
 		<div class="acciones">
 		<a href="#" onclick="enviar_accion('editar','<?php echo $row['IdPaquete'];?>');">

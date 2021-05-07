@@ -26,7 +26,7 @@ if (empty($_SESSION["usuario"])) {
   <div id="acercade">
 	<p>
 		<span>Sistema para el <b>C</b>ontrol de <b>E</b>stimaciones <b>R</b>ecibidas (C.E.R.<sup>&trade;</sup>)</span>
-		Todos los derechos reservados 2018-2019<sup>&reg;</sup>.
+		Todos los derechos reservados 2018-2021<sup>&reg;</sup>.
 		<strong>Autor: Jose Antonio</strong>
 	</p>
   </div>	

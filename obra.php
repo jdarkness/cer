@@ -488,15 +488,15 @@ if (empty($_SESSION["usuario"])) {
 			$row = mysqli_fetch_assoc($resultado);
 			?>
 	
-	<tr class="editar_registro" >
-	<td class="alinear_centro" onclick="enviar_accion('editar','<?php echo $row['IdObra'];?>');"><?php echo $i+1; ?></td>
-	<td onclick="enviar_accion('editar','<?php echo $row['IdObra'];?>');"><?php echo $row['NomEvento'];?></td>
-    <td onclick="enviar_accion('editar','<?php echo $row['IdObra'];?>');"><?php echo $row['NoObra'];?></td>
-    <td onclick="enviar_accion('editar','<?php echo $row['IdObra'];?>');"><?php echo $row['NoContrato'];?></td>    
-	<td onclick="enviar_accion('editar','<?php echo $row['IdObra'];?>');"><?php echo $row['NomMunicipio'];?></td>
-	<td onclick="enviar_accion('editar','<?php echo $row['IdObra'];?>');"><?php echo $row['NomLocalidad'];?></td>
-	<td onclick="enviar_accion('editar','<?php echo $row['IdObra'];?>');"><?php echo $row['CentroTrabajo'];?></td>
-	<td onclick="enviar_accion('editar','<?php echo $row['IdObra'];?>');"><?php echo $row['NomContratista'];?></td>
+	<tr >
+	<td class="alinear_centro" ><?php echo $i+1; ?></td>
+	<td ><?php echo $row['NomEvento'];?></td>
+    <td ><?php echo $row['NoObra'];?></td>
+    <td ><?php echo $row['NoContrato'];?></td>    
+	<td ><?php echo $row['NomMunicipio'];?></td>
+	<td ><?php echo $row['NomLocalidad'];?></td>
+	<td ><?php echo $row['CentroTrabajo'];?></td>
+	<td ><?php echo $row['NomContratista'];?></td>
 	<td>		
 		<div class="acciones">
 		<a href="#" onclick="enviar_accion('editar','<?php echo $row['IdObra'];?>');">

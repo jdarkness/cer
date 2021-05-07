@@ -277,10 +277,10 @@ if (empty($_SESSION["usuario"])) {
 			$row = mysqli_fetch_assoc($resultado);
 			?>
 	
-	<tr class="editar_registro" >
-	<td class="alinear_centro" onclick="enviar_accion('editar','<?php echo $row['IdContratista'];?>');"><?php echo $i+1; ?></td>
-    <td onclick="enviar_accion('editar','<?php echo $row['IdContratista'];?>');"><?php echo $row['NombreLargo'];?></td>
-    <td onclick="enviar_accion('editar','<?php echo $row['IdContratista'];?>');"><?php echo $row['NombreCorto'];?></td>    
+	<tr >
+	<td class="alinear_centro" ><?php echo $i+1; ?></td>
+    <td ><?php echo $row['NombreLargo'];?></td>
+    <td ><?php echo $row['NombreCorto'];?></td>    
 	<td>		
 		<div class="acciones">
 		<a href="#" onclick="enviar_accion('editar','<?php echo $row['IdContratista'];?>');">

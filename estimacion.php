@@ -16,6 +16,7 @@ if (empty($_SESSION["usuario"])) {
 	} else {
 		$idPaquete='';	
 	}	
+	$numObra='';
 	$numContrato='';
 	$numEstimacion='';
 	$montoEjercido='';
@@ -43,9 +44,10 @@ if (empty($_SESSION["usuario"])) {
 		case 'nuevo':
 			if (isset($_POST['NoContrato']) && isset($_POST['IdPaquete'])) {
 				//$mensaje=tipo_mensaje('info', 'Segunda vez');
-				
-				// Obtenemos los datos que necesitamos para agregar la obra				
+
+				// Obtenemos los datos que necesitamos para agregar la estimacion				
 				$idPaquete=texto_seguro($_POST['IdPaquete'], $link);
+				$numObra=texto_seguro($_POST['NoObra'], $link);
 				$numContrato=texto_seguro($_POST['NoContrato'], $link);
 				$numEstimacion=texto_seguro($_POST['NumEstimacion'], $link);
 				$montoEjercido=quitarSeparadorMiles(texto_seguro($_POST['MontoEjercido'], $link));
@@ -56,7 +58,7 @@ if (empty($_SESSION["usuario"])) {
 				$fechaOficio=texto_seguro($_POST['FechaOficio'], $link);
 				
 				// Corroboramos que tenemos los datos minimos para guardar en la tabla
-				if (empty($numContrato) || empty($idPaquete) || empty($numEstimacion) || empty($montoEjercido) || empty($montoRetenciones) || empty($montoLiquido) ) {
+				if (empty($numObra) || empty($numContrato) || empty($idPaquete) || empty($numEstimacion) || empty($montoEjercido) || empty($montoRetenciones) || empty($montoLiquido) ) {
 					$mensaje=tipo_mensaje('error', 'Falta campo obligatorio. ');
 				} else {
 					// Verificamos que la fecha es valida si la hay
@@ -64,9 +66,10 @@ if (empty($_SESSION["usuario"])) {
 						// fecha invalida
 						$mensaje=tipo_mensaje('error', 'Fecha Incorrecta.');
 					} else {
-						// Fecha correcta o no hay
+						// Fecha correcta o no hay						
 						// Corroboramos que no este dado de alta el registro en la tabla
-						$query="SELECT IdEstimacion FROM Estimacion WHERE NoContrato = '$numContrato' AND IdPaquete = $idPaquete AND NoEstimacion = '$numEstimacion';";
+						//echo $query="SELECT IdEstimacion FROM Estimacion WHERE NoContrato = '$numContrato' AND IdPaquete = $idPaquete AND NoEstimacion = '$numEstimacion';";
+						$query="SELECT IdEstimacion FROM Estimacion INNER JOIN Obra ON Estimacion.IdObra = Obra.IdObra WHERE Estimacion.NoContrato = '$numContrato' AND Estimacion.IdPaquete = $idPaquete AND Estimacion.NoEstimacion = '$numEstimacion' AND Obra.NoObra = '$numObra';";
 						if (!($resultado = mysqli_query($link, $query))) {
 							//Error en la consulta						
 							$texto=mysqli_error($link). ' ' . $query;
@@ -76,6 +79,7 @@ if (empty($_SESSION["usuario"])) {
 							if (mysqli_num_rows($resultado)>0) {
 								$mensaje=tipo_mensaje('advertencia', 'Ya existe la estimaci&oacute;n en el paquete');
 								$numContrato='';
+								$numObra='';
 								$numEstimacion='';
 								$montoEjercido='';
 								$montoRetenciones='';
@@ -89,6 +93,8 @@ if (empty($_SESSION["usuario"])) {
 								//$mensaje=tipo_mensaje('info', 'Todo bien, Guardamos en la tabla. ');
 								if (!empty($fechaOficio)){
 									$fechaOficio=toSQLDate($fechaOficio);
+								} else {
+									$fechaOficio="0000-00-00";
 								}
 			
 								// Buscamos su numero de obra
@@ -105,29 +111,32 @@ if (empty($_SESSION["usuario"])) {
 									if (mysqli_num_rows($resultado)>0) {
 										$row = mysqli_fetch_assoc($resultado);
 										$idObra=$row['IdObra'];
+										$query="INSERT INTO Estimacion(IdPaquete, IdObra, NoContrato, NoEstimacion, NoOficio, FechaOficio, MontoEjercido, MontoRetenciones, MontoLiquido, Observaciones) 
+											VALUES('$idPaquete', '$idObra', '$numContrato', '$numEstimacion', '$numOficio', '$fechaOficio', '$montoEjercido', '$montoRetenciones', '$montoLiquido','$observaciones');";
+										if (!($resultado = mysqli_query($link, $query))) {
+											//Error en la consulta						
+											$texto=mysqli_error($link). ' ' . $query;
+											$tipo='error';
+											$mensaje=tipo_mensaje($tipo, $texto);				
+										} else {
+											$mensaje=tipo_mensaje('info', 'Estimaci&oacute;n Agregada');
+											//$idPaquete='';
+											$numContrato='';
+											$numObra='';
+											$numEstimacion='';
+											$montoEjercido='';
+											$montoRetenciones='';
+											$montoLiquido='';
+											$observaciones='';
+											$numOficio='';
+											$fechaOficio='';
+										}
+									} else {
+										// No existe la obra, no esta dada de alta
+										$mensaje=tipo_mensaje('advertencia', 'No existe el n&uacute;mero de Obra');
+										if ($fechaOficio=="0000-00-00") { $fechaOficio=''; } // Eliminamos los 0000-00-00 que le pusimos en caso de estar vacio										 
 									}
-								}
-								
-								$query="INSERT INTO Estimacion(IdPaquete, IdObra, NoContrato, NoEstimacion, NoOficio, FechaOficio, MontoEjercido, MontoRetenciones, MontoLiquido, Observaciones) 
-											VALUES('$idPaquete', '$idObra', '$numContrato', '$numEstimacion', '$numOficio', '$fechaOficio', '$montoEjercido', '$montoRetenciones', '$montoLiquido','$observaciones');";								
-								if (!($resultado = mysqli_query($link, $query))) {
-									//Error en la consulta						
-									$texto=mysqli_error($link). ' ' . $query;
-									$tipo='error';
-									$mensaje=tipo_mensaje($tipo, $texto);				
-								} else {
-									$mensaje=tipo_mensaje('info', 'Estimaci&oacute;n Agregada');
-									//$idPaquete='';
-									$numContrato='';
-									$numEstimacion='';
-									$montoEjercido='';
-									$montoRetenciones='';
-									$montoLiquido='';
-									$observaciones='';
-									$numOficio='';
-									$fechaOficio='';
-								}				
-								
+								}	
 							}
 						}
 					}
@@ -138,11 +147,13 @@ if (empty($_SESSION["usuario"])) {
 		case 'editar':
 			// Buscamos el elemento a editar
 			//$valor=texto_seguro($_POST['valor'], $link);
-			$query="SELECT IdEstimacion, NoContrato, IdPaquete, NoEstimacion, NoOficio, FechaOficio, MontoEjercido, MontoRetenciones, MontoLiquido, Observaciones FROM Estimacion WHERE IdEstimacion=$valor;";
+		  $query="SELECT Estimacion.IdEstimacion, Estimacion.NoContrato, Obra.NoObra, Estimacion.IdPaquete, Estimacion.NoEstimacion, Estimacion.NoOficio, Estimacion.FechaOficio, Estimacion.MontoEjercido, Estimacion.MontoRetenciones, Estimacion.MontoLiquido, Estimacion.Observaciones  FROM Estimacion LEFT JOIN Obra ON Obra.IdObra = Estimacion.IdObra	WHERE Estimacion.IdEstimacion=$valor;";
+			//echo $query="SELECT IdEstimacion, NoContrato, IdPaquete, NoEstimacion, NoOficio, FechaOficio, MontoEjercido, MontoRetenciones, MontoLiquido, Observaciones FROM Estimacion WHERE IdEstimacion=$valor;";
 			if ($resultado = mysqli_query($link, $query)) {
 				$row = mysqli_fetch_assoc($resultado);
 				$idPaquete=$row['IdPaquete'];
 				$numContrato=$row['NoContrato'];
+				$numObra=$row['NoObra'];
 				$numEstimacion=$row['NoEstimacion'];
 				$montoEjercido=number_format($row['MontoEjercido'], 2, '.', ',');
 				$montoRetenciones=number_format($row['MontoRetenciones'], 2, '.', ',');
@@ -168,6 +179,7 @@ if (empty($_SESSION["usuario"])) {
 			// Obtenemos los datos que necesitamos para actualizar, no se puede modificar el paquete al que pertenece				
 			$idPaquete=texto_seguro($_POST['IdPaquete'], $link);
 			$numContrato=texto_seguro($_POST['NoContrato'], $link);
+			$numObra=texto_seguro($_POST['NoObra'], $link);
 			$numEstimacion=texto_seguro($_POST['NumEstimacion'], $link);
 			$montoEjercido=quitarSeparadorMiles(texto_seguro($_POST['MontoEjercido'], $link));			
 			$montoRetenciones=quitarSeparadorMiles(texto_seguro($_POST['MontoRetenciones'], $link));
@@ -188,6 +200,8 @@ if (empty($_SESSION["usuario"])) {
 					// Fecha correcta o no hay
 					if (!empty($fechaOficio)){
 						$fechaOficio=toSQLDate($fechaOficio);
+					} else {
+						$fechaOficio="0000-00-00";
 					}
 					// Buscamos su numero de obra
 					$idObra='';
@@ -210,6 +224,7 @@ if (empty($_SESSION["usuario"])) {
 						$msgBoton='Agregar Estimacion';
 						$accion='nuevo';
 						$numContrato='';
+						$numObra='';
 						$numEstimacion='';
 						$montoEjercido='';
 						$montoRetenciones='';
@@ -235,6 +250,7 @@ if (empty($_SESSION["usuario"])) {
 				$accion='nuevo';
 				$idPaquete=texto_seguro($_POST['IdPaquete'], $link);
 				$numContrato='';
+				$numObra='';
 				$numEstimacion='';
 				$montoEjercido='';
 				$montoRetenciones='';
@@ -261,7 +277,7 @@ if (empty($_SESSION["usuario"])) {
 		// Buscamos si hay elementos para mostrar que sean del paquete que acaba de agregar
 		if (!empty($idPaquete)) {
 			//$query="SELECT Estimacion.IdEstimacion, Evento.NombreCorto, Estimacion.NoContrato, NoEstimacion, MontoRetenciones, MontoLiquido, MontoEjercido, Observaciones, Obra.NoContrato AS NumContrato, Obra.Municipio, Obra.CentroTrabajo, Contratista.NombreLargo FROM Estimacion LEFT JOIN Obra ON Estimacion.IdObra = Obra.IdObra LEFT JOIN Contratista ON Obra.IdContratista = Contratista.IdContratista LEFT JOIN Evento ON Obra.IdEvento = Evento.IdEvento WHERE Estimacion.IdPaquete = '$idPaquete'";
-			$query="SELECT Estimacion.IdEstimacion, Evento.NombreCorto, Estimacion.NoContrato, NoEstimacion, MontoRetenciones, MontoLiquido, MontoEjercido, Observaciones, Obra.NoContrato AS NumContrato, municipios.nombre AS NomMunicipio, Obra.CentroTrabajo, Contratista.NombreLargo 
+			$query="SELECT Estimacion.IdEstimacion, Evento.NombreCorto, Estimacion.NoContrato, NoEstimacion, MontoRetenciones, MontoLiquido, MontoEjercido, Observaciones, Obra.NoContrato AS NumContrato, Obra.NoObra, municipios.nombre AS NomMunicipio, Obra.CentroTrabajo, Contratista.NombreLargo 
 				    FROM Estimacion 
 					LEFT JOIN Obra ON Estimacion.IdObra = Obra.IdObra 
 					LEFT JOIN Contratista ON Obra.IdContratista = Contratista.IdContratista 
@@ -276,7 +292,7 @@ if (empty($_SESSION["usuario"])) {
 			}
 		} else {
 			//$query='SELECT IdEstimacion FROM Estimacion WHERE 1 = 0;';
-			$query="SELECT Estimacion.IdEstimacion, Evento.NombreCorto, Estimacion.NoContrato, NoEstimacion, MontoRetenciones, MontoLiquido, MontoEjercido, Observaciones, Obra.NoContrato AS NumContrato, municipios.nombre AS NomMunicipio, Obra.CentroTrabajo, Contratista.NombreLargo 
+			$query="SELECT Estimacion.IdEstimacion, Evento.NombreCorto, Estimacion.NoContrato, NoEstimacion, MontoRetenciones, MontoLiquido, MontoEjercido, Observaciones, Obra.NoContrato AS NumContrato, Obra.NoObra, municipios.nombre AS NomMunicipio, Obra.CentroTrabajo, Contratista.NombreLargo 
 			        FROM Estimacion 
 					LEFT JOIN Obra ON Estimacion.IdObra = Obra.IdObra 
 					LEFT JOIN Contratista ON Obra.IdContratista = Contratista.IdContratista 
@@ -347,7 +363,8 @@ if (empty($_SESSION["usuario"])) {
 			}
 			?>
 			</select>
-		</span></label>		
+		</span></label>
+	<label for="NoObra"><span class="etiqueta">Num. Obra <span class="requerido">*</span> :</span><span class="campo"><input type="text" id="NoObra" name="NoObra" value="<?php echo $numObra; ?>" onkeypress="siguienteInput(event,'NumContrato')" required /></span></label>	
 	<label for="NoContrato"><span class="etiqueta">Num. Contrato <span class="requerido">*</span> :</span><span class="campo"><input type="text" id="NoContrato" name="NoContrato" value="<?php echo $numContrato; ?>" onkeypress="siguienteInput(event,'NumEstimacion')" required /></span></label>
 	<label for="NumEstimacion"><span class="etiqueta">Num. Estimaci&oacute;n <span class="requerido">*</span> :</span><span class="campo"><input type="text" id="NumEstimacion" name="NumEstimacion" value="<?php echo $numEstimacion; ?>" onkeypress="siguienteInput(event,'MontoEjercido')" required /></span></label>
 	<label for="MontoEjercido"><span class="etiqueta">Monto Ejercido <span class="requerido">*</span> :</span><span class="campo"><input type="text" id="MontoEjercido" name="MontoEjercido" value="<?php echo $montoEjercido; ?>" onfocusout="if (this.value.indexOf(',')==-1){this.value=separarMiles(this.value);}" required /></span></label>
@@ -411,7 +428,7 @@ if (empty($_SESSION["usuario"])) {
 	<tr >
 	<td class="alinear_centro" ><?php echo $i+1; ?></td>
 	<td ><?php echo $row['NombreCorto'];?></td>
-	<td ><?php echo $row['NoContrato'];?></td>
+	<td class="alinear_centro" ><?php echo $row['NoContrato']."<BR />(".$row['NoObra'].")";?></td>
     <td ><?php echo $row['NombreLargo'];?></td>
     <td ><?php echo $row['CentroTrabajo'];?></td>    
 	<td class="alinear_centro" ><?php echo $row['NomMunicipio'];?></td>

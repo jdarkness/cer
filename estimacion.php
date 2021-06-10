@@ -101,7 +101,8 @@ if (empty($_SESSION["usuario"])) {
 								$idObra='';
 								//$noContrato=substr($numContrato, 0, 7);
 								//$query="SELECT IdObra FROM Obra WHERE NoContrato LIKE '$noContrato%'";
-								$query="SELECT IdObra FROM Obra WHERE NoContrato LIKE '$numContrato%'";
+								//$query="SELECT IdObra FROM Obra WHERE NoContrato LIKE '$numContrato%'";
+								$query="SELECT IdObra FROM Obra WHERE NoContrato = '$numContrato' AND NoObra = '$numObra';";								
 								if (!($resultado = mysqli_query($link, $query))) {
 									//Error en la consulta						
 									$texto=mysqli_error($link). ' ' . $query;
@@ -133,7 +134,7 @@ if (empty($_SESSION["usuario"])) {
 										}
 									} else {
 										// No existe la obra, no esta dada de alta
-										$mensaje=tipo_mensaje('advertencia', 'No existe el n&uacute;mero de Obra');
+										$mensaje=tipo_mensaje('advertencia', 'No existe el n&uacute;mero de Obra o Contrato');
 										if ($fechaOficio=="0000-00-00") { $fechaOficio=''; } // Eliminamos los 0000-00-00 que le pusimos en caso de estar vacio										 
 									}
 								}	

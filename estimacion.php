@@ -207,7 +207,8 @@ if (empty($_SESSION["usuario"])) {
 					// Buscamos su numero de obra
 					$idObra='';
 					$noContrato=substr($numContrato, 0, 7);
-					$query="SELECT IdObra FROM Obra WHERE NoContrato LIKE '$noContrato%'";
+					//echo $query="SELECT IdObra FROM Obra WHERE NoContrato LIKE '$noContrato%'";
+					$query="SELECT IdObra FROM Obra WHERE NoObra LIKE '$numObra'";
 					if (!($resultado = mysqli_query($link, $query))) {
 						//Error en la consulta						
 						$texto=mysqli_error($link). ' ' . $query;
@@ -217,29 +218,31 @@ if (empty($_SESSION["usuario"])) {
 						if (mysqli_num_rows($resultado)>0) {
 							$row = mysqli_fetch_assoc($resultado);
 							$idObra=$row['IdObra'];
+							// Todo bien actualizamos los datos
+							$query="UPDATE Estimacion SET IdPaquete='$idPaquete', IdObra='$idObra', NoContrato='$numContrato', NoEstimacion='$numEstimacion', MontoEjercido='$montoEjercido', MontoRetenciones='$montoRetenciones', MontoLiquido='$montoLiquido', NoOficio='$numOficio', FechaOficio='$fechaOficio', Observaciones='$observaciones' WHERE IdEstimacion='$valor';";
+							if ($resultado = mysqli_query($link, $query)) {				
+								$msgBoton='Agregar Estimacion';
+								$accion='nuevo';
+								$numContrato='';
+								$numObra='';
+								$numEstimacion='';
+								$montoEjercido='';
+								$montoRetenciones='';
+								$montoLiquido='';
+								$observaciones='';
+								$numOficio='';
+								$fechaOficio='';
+								$mensaje=tipo_mensaje('info', 'Registro Actualizado');
+							} else {
+								//Error en la consulta		
+								$texto=mysqli_error($link). ' ' . $query;
+								$tipo='error';
+								$mensaje=tipo_mensaje($tipo, $texto);				
+							}
+						} else {							
+							$mensaje=tipo_mensaje("error", "No existe el Numero de Obra");
 						}
-					}
-					// Todo bien actualizamos los datos
-					$query="UPDATE Estimacion SET IdPaquete='$idPaquete', IdObra='$idObra', NoContrato='$numContrato', NoEstimacion='$numEstimacion', MontoEjercido='$montoEjercido', MontoRetenciones='$montoRetenciones', MontoLiquido='$montoLiquido', NoOficio='$numOficio', FechaOficio='$fechaOficio', Observaciones='$observaciones' WHERE IdEstimacion='$valor';";
-					if ($resultado = mysqli_query($link, $query)) {				
-						$msgBoton='Agregar Estimacion';
-						$accion='nuevo';
-						$numContrato='';
-						$numObra='';
-						$numEstimacion='';
-						$montoEjercido='';
-						$montoRetenciones='';
-						$montoLiquido='';
-						$observaciones='';
-						$numOficio='';
-						$fechaOficio='';
-						$mensaje=tipo_mensaje('info', 'Registro Actualizado');
-					} else {
-						//Error en la consulta		
-						$texto=mysqli_error($link). ' ' . $query;
-						$tipo='error';
-						$mensaje=tipo_mensaje($tipo, $texto);				
-					}
+					}					
 				}
 			}			
 			break;

@@ -1,5 +1,5 @@
 function enviar_accion(accion, valor) {
-	//alert('Alerta de envio');
+	//alert('Alerta de envio ' + accion + ':'+valor);
 	//console.log('mensaje de envio');
 	//valor = document.getElementById('valor').value;
 	//accion = document.getElementById('accion').value;	
@@ -249,4 +249,35 @@ function myFunction(xml) {
     "</td></tr>";
   }
   document.getElementById("demo").innerHTML = table;
+}
+
+function mostrar_agregar(btn1, btn2, btn3, btn4, btn5, btn6) {
+	//'btnAgregar', 'IdEstado', 'btnOk','btnCancelar','txtEstado'
+	//alert(btn1+" "+btn2+" "+btn3+" "+btn4+" "+btn5);
+	document.getElementById(btn1).style.display="none";
+	document.getElementById(btn2).style.display="none";
+	document.getElementById(btn3).style.display="none";
+	document.getElementById(btn4).style.display="inline";
+	document.getElementById(btn5).style.display="inline";	
+	document.getElementById(btn6).style.display="inline";	
+}
+
+function ocultar_agregar(btn1, btn2, btn3, btn4, btn5, btn6) {
+	//'btnAgregar', 'IdEstado', 'btnOk','btnCancelar','txtEstado'
+	//alert("estado: "+btn1+" id: " + btn2);
+	document.getElementById(btn1).style.display="inline";
+	document.getElementById(btn2).style.display="inline";
+	document.getElementById(btn3).style.display="inline";
+	document.getElementById(btn4).style.display="none";	
+	document.getElementById(btn5).style.display="none";	
+	document.getElementById(btn6).style.display="none";	
+}
+
+function visualizar_elemento() {
+	//alert("Elementos: "+ arguments.length);
+	// visualizar_elemento('lblMunicipio','none','lblLocalidad','none','btnAgregarEstado','none', 'IdEstado','none', 'btnEliminarEstado','none', 'btnOkEstado','inline','btnCancelarEstado','inline','txtEstado','inline')
+	for (let i = 0; i < arguments.length; i=i+2) {
+		//alert("Elemento: "+ arguments[i] + " Display: " + arguments[i+1]);
+		document.getElementById(arguments[i]).style.display=arguments[i+1];
+	}
 }

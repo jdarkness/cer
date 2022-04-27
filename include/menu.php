@@ -8,6 +8,7 @@ $actual=basename($_SERVER['PHP_SELF']);
 	  <li><a <?php if ($actual=='obra.php') {?> class="activo" <?php } ?>href="obra.php">Obra</a></li>	  
 	  <li><a <?php if ($actual=='contratista.php') {?> class="activo" <?php } ?>href="contratista.php">Contratista</a></li>
 	  <li><a <?php if ($actual=='evento.php') {?> class="activo" <?php } ?>href="evento.php">Evento</a></li>
+	  <li><a <?php if ($actual=='localidad.php') {?> class="activo" <?php } ?>href="localidad.php">Localidad</a></li>
 	  <li><a <?php if ($actual=='usuario.php') {?> class="activo" <?php } ?>href="usuario.php">Usuario</a></li>
 	  <li><a <?php if ($actual=='signup.php') {?> class="activo" <?php } ?>href="signup.php">Nuevo Usuario</a></li>
 	  <li><a <?php if ($actual=='acercade.php') {?> class="activo" <?php } ?>href="acercade.php">Acerca de</a></li>

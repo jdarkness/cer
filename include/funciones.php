@@ -18,8 +18,8 @@ function texto_seguro($texto, $link) {
 
 function conectar_a_bd($basededatos="CER") {	
 	// base de datos local
-	$usuario='usuario';
-	$contrasenia='password';	
+	$usuario='root';
+	$contrasenia='toor0908';	
 	$host='localhost';
 	$link = mysqli_connect($host, $usuario, $contrasenia, $basededatos);
 	if (mysqli_connect_errno()) {
@@ -69,7 +69,9 @@ function crear_salt() {
 
 function encriptar_password($password, $salt) {
 	//echo $password."::".$salt;
-	$txtencriptado=utf8_encode($salt.$password);	
+	//$txtencriptado=($salt.$password);	
+	$txtencriptado=utf8_encode($salt.$password); // Lo sustitui con iconv porque marca error Uncaught Error: Call to undefined function utf8_encode(), y ya intente instalar el php-xml y sigue sin funcionar. Al parecer era la version de php, desinstale la 7.0 y funciono porque phpmyadmin necesita minimo la 7.1.3
+	//$txtencriptado=iconv('UTF-8', 'ASCII//TRANSLIT', $salt.$password);	
 	for ($i=0; $i<1000; $i++) {
 		//$txtencriptado=md5($txtencriptado);
 		$txtencriptado=sha1($txtencriptado); 
